@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ post.pk }}번째 글</h1>
+<hr>
+<p>{{ post.content }}</p>
+<hr>
+
+    
+<a href="{% url 'posts:list' %}">BACK</a>
+
+{# if user == post.user #}
+<form action="{% url 'posts:delete' post.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="삭제"/>
+</form>
+<a href="{% url 'posts:update' post.pk %}">[수정]</a>
+{# endif #}
+
+{% endblock %}

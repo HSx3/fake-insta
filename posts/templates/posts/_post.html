@@ -1,0 +1,15 @@
+<div class="card" style="width: 18rem;">
+    {% if post.image %}
+        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.image.url }}">
+    {% else %}
+        <img src="#" class="card-img-top" alt="NO_Image">
+    {% endif %}
+    <div class="card-body">
+        <a href="{# url 'posts:detail' post.pk #}"><p class="card-text">{{ post.content }}</p></a>
+        <a href="{% url 'posts:update' post.pk %}" class="btn btn-warning">수정</a>
+        <form action="{% url 'posts:delete' post.pk %}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <input type="submit" value="삭제" class="btn btn-danger">
+        </form>
+    </div>
+</div>
