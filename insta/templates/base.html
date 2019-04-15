@@ -13,8 +13,16 @@
 <body>
     {% include 'posts/_nav.html' %}
     <div class="container">
-        {% block content %}
-        {% endblock %}
+        {% if user.is_authenticated %}
+        <h1>안녕! {{ user.username }}</h1>
+        <form action="{% url 'accounts:delete' %}" method="POST" style="display: inline;" onsubmit="return confirm('R U SURE?');">
+            {% csrf_token %}
+            <!--<input type="submit" value="탈퇴">-->
+        </form>
+    {% endif %}
+    <hr>
+    {% block content %}
+    {% endblock %}
     </div>
 
 
