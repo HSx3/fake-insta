@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1 class="text-center">{{ people.username }}'s Profile</h1>
+<div class="jumbotron jumbotron-fluid text-center mb-2">
+  <div class="container">
+    <h1 class="display-4">{{ people.profile.nickname }}</h1>
+    <p class="lead">{{ people.profile.introduction }}</p>
+  </div>
+</div>
 {% if people == user %}
 <div class="text-center">
     <a href="{% url 'accounts:update' %}" class="badge badge-info">회원정보 수정</a>
+    <a href="{% url 'accounts:profile_update' %}" class="badge badge-success">프로필 수정</a>
     <a href="{% url 'accounts:password' %}" class="badge badge-war">비밀번호 변경</a>
 </div>
 {% endif %}
