@@ -1,7 +1,7 @@
-<div class="col-4 my-3">
+<div class="col-10 my-3">
     <div class="card">
       <div class="card-header">
-        <h5 class="card-text">{{ post.user }}</h5>
+        <h5 class="card-text"><a class="card-link" href="{% url 'people' post.user.username %}">{{ post.user }}</a></h5>
       </div>
         {% if post.image_set %}
             <div id="post{{ post.pk }}" class="carousel slide" data-ride="carousel">

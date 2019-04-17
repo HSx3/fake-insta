@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from .forms import UserCustomChangeForm, ProfileForm
+from .forms import UserCustomChangeForm, ProfileForm, CustomUserCreationForm
 from .models import Profile
 
 # Create your views here.
@@ -13,7 +13,7 @@ def signup(request):
         return redirect('posts:list')
         
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             Profile.objects.create(user=user) # 프로필도 생성
@@ -21,7 +21,7 @@ def signup(request):
             return redirect('posts:list')
         
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     context = {
         'form': form
     }
@@ -111,3 +111,18 @@ def profile_update(request):
         'profile_form': profile_form,
     }
     return render(request, 'accounts/profile_update.html', context)
+    
+    
+@login_required
+def follow(request, user_pk):
+    people = get_object_or_404(get_user_model(), pk=user_pk)
+    # people이 팔로워하고 있는 모든 유저에 현재 접속 유저가 있다면,
+    if request.user in people.followers.all():
+        # 언팔로우  
+        people.followers.remove(request.user)
+    # 아니면
+    else:
+        # 팔로우
+        people.followers.add(request.user)
+    return redirect('people', people.username)
+    

@@ -3,10 +3,25 @@ from .models import Post, Image, Comment
 from .forms import PostForm, ImageForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.db.models import Q
+from itertools import chain
 
 # Create your views here.
+@login_required
 def list(request):
-    posts = get_list_or_404(Post.objects.order_by('-pk'))
+    # 1
+    followings = request.user.followings.all()
+    posts = Post.objects.filter(Q(user__in=followings) | Q(user=request.user.id)).order_by('-pk')
+    
+    # 2
+    # followings = request.user.followings.all()
+    # chain_followings = chain(followings, [request.user])
+    # posts = Post.objects.filter(user__in=chain_followings).order_by('-pk')
+    
+    
+    
+    # posts = Post.objects.filter(user__in=request.user.followings.all()).order_by('-pk')   # 팔로잉 글
+    # posts = get_list_or_404(Post.objects.order_by('-pk'))     # 모든 글
     comment_form = CommentForm()
     context = {
         'posts': posts,
@@ -122,3 +137,14 @@ def like(request, post_pk):
     # else:
     #     post.like_users.add(user)
     # return redirect('posts:list')
+    
+@login_required
+def explore(request):
+    # posts = Post.objects.order_by('-pk')
+    posts = Post.objects.exclude(user=request.user).order_by('-pk') # 내가 쓴 글 제외
+    comment_form = CommentForm()
+    context = {
+        'posts': posts,
+        'comment_form': comment_form,
+    }
+    return render(request, 'posts/explore.html', context)
