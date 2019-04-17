@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1 class="text-center">{{ people.username }}'s Profile</h1>
+{% if people == user %}
+<div class="text-center">
+    <a href="{% url 'accounts:update' %}" class="badge badge-info">회원정보 수정</a>
+    <a href="{% url 'accounts:password' %}" class="badge badge-war">비밀번호 변경</a>
+</div>
+{% endif %}
 <h3 class="text-center">{{ people.username }}의 게시글</h3>
 <div class="row">
     {% for post in people.post_set.all|dictsortreversed:"pk" %}
